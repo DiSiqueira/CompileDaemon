@@ -91,10 +91,12 @@ type globList []string
 func (g *globList) String() string {
 	return fmt.Sprint(*g)
 }
+
 func (g *globList) Set(value string) error {
 	*g = append(*g, filepath.Clean(value))
 	return nil
 }
+
 func (g *globList) Matches(value string) bool {
 	for _, v := range *g {
 		if match, err := filepath.Match(v, value); err != nil {
@@ -107,10 +109,10 @@ func (g *globList) Matches(value string) bool {
 }
 
 var (
-	flagDirectory        = flag.String("directory", ".", "Directory to watch for changes")
-	flagPattern          = flag.String("pattern", FilePattern, "Pattern of watched files")
-	flagCommand          = flag.String("command", "", "Command to run and restart after build")
-	flagCommandStop      = flag.Bool("command-stop", false, "Stop command before building")
+	flagDirectory       = flag.String("directory", ".", "Directory to watch for changes")
+	flagPattern         = flag.String("pattern", FilePattern, "Pattern of watched files")
+	flagCommand         = flag.String("command", "", "Command to run and restart after build")
+	flagCommandStop     = flag.Bool("command-stop", false, "Stop command before building")
 	flagRecursive       = flag.Bool("recursive", true, "Watch all dirs. recursively")
 	flagBuild           = flag.String("build", "go build", "Command to rebuild after changes")
 	flagBuildDir        = flag.String("build-dir", "", "Directory to run build command in.  Defaults to directory")
@@ -124,6 +126,7 @@ var (
 	flagExcludedDirs  globList
 	flagExcludedFiles globList
 	flagIncludedFiles globList
+	flagExcludedWildcards globList
 )
 
 func okColor(format string, args ...interface{}) string {
@@ -359,6 +362,7 @@ func flusher(buildStarted <-chan string, buildSuccess <-chan bool) {
 func main() {
 	flag.Var(&flagExcludedDirs, "exclude-dir", " Don't watch directories matching this name")
 	flag.Var(&flagExcludedFiles, "exclude", " Don't watch files matching this name")
+	flag.Var(&flagExcludedWildcards, "exclude-wildcard", " Don't watch files that contains this on it's the path")
 	flag.Var(&flagIncludedFiles, "include", " Watch files matching this name")
 
 	flag.Parse()
