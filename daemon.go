@@ -368,7 +368,7 @@ func main() {
 	}
 
 	if *flagDirectory == "" {
-		fmt.Fprintf(os.Stderr, "-directory=... is required.\n")
+		fmt.Fprint(os.Stderr, "-directory=... is required.\n")
 		os.Exit(1)
 	}
 
