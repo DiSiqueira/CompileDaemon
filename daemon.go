@@ -439,6 +439,10 @@ func main() {
 			if ev.Op&fsnotify.Remove == fsnotify.Remove || ev.Op&fsnotify.Write == fsnotify.Write || ev.Op&fsnotify.Create == fsnotify.Create {
 				base := filepath.Base(ev.Name)
 
+				if *flagVerbose {
+					log.Printf("Path: %s.\n", base)
+				}
+
 				// Assume it is a directory and track it.
 				if *flagRecursive == true && !flagExcludedDirs.Matches(ev.Name) {
 					watcher.Add(ev.Name)
