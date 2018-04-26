@@ -192,6 +192,9 @@ func builder(jobs <-chan string, buildStarted chan<- string, buildDone chan<- bo
 	for {
 		select {
 		case eventPath = <-jobs:
+			if *flagVerbose {
+				log.Printf("Path: %s.\n", eventPath)
+			}
 			threshold = createThreshold()
 		case <-threshold:
 			buildStarted <- eventPath
