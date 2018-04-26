@@ -391,7 +391,10 @@ func main() {
 	if *flagRecursive == true {
 		err = filepath.Walk(*flagDirectory, func(path string, info os.FileInfo, err error) error {
 			if err == nil && info.IsDir() {
-				if flagExcludedDirs.Matches(path) {
+				if flagExcludedDirs.Matches(path) || strings.Contains(path, "vendor") {
+					if *flagVerbose {
+						log.Printf("Skipping directory '%s'.\n", path)
+					}
 					return filepath.SkipDir
 				} else {
 					if *flagVerbose {
