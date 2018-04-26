@@ -192,12 +192,12 @@ func builder(jobs <-chan string, buildStarted chan<- string, buildDone chan<- bo
 	for {
 		select {
 		case eventPath = <-jobs:
-			if *flagVerbose {
-				log.Printf("Path: %s.\n", eventPath)
-			}
 			threshold = createThreshold()
 		case <-threshold:
 			buildStarted <- eventPath
+			if *flagVerbose {
+				log.Printf("buildStarted: %s.\n", eventPath)
+			}
 			buildDone <- build()
 		}
 	}
@@ -441,10 +441,6 @@ func main() {
 		case ev := <-watcher.Events:
 			if ev.Op&fsnotify.Remove == fsnotify.Remove || ev.Op&fsnotify.Write == fsnotify.Write || ev.Op&fsnotify.Create == fsnotify.Create {
 				base := filepath.Base(ev.Name)
-
-				if *flagVerbose {
-					log.Printf("Path: %s.\n", base)
-				}
 
 				// Assume it is a directory and track it.
 				if *flagRecursive == true && !flagExcludedDirs.Matches(ev.Name) {
