@@ -78,7 +78,6 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/fsnotify/fsnotify"
-	"github.com/cweill/gotests/gotests/process"
 )
 
 // Milliseconds to wait for the next job to begin after a file change
