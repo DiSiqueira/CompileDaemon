@@ -78,6 +78,7 @@ import (
 
 	"github.com/fatih/color"
 	"github.com/fsnotify/fsnotify"
+	"github.com/cweill/gotests/gotests/process"
 )
 
 // Milliseconds to wait for the next job to begin after a file change
@@ -198,7 +199,12 @@ func builder(jobs <-chan string, buildStarted chan<- string, buildDone chan<- bo
 			if *flagVerbose {
 				log.Printf("buildStarted: %s.\n", eventPath)
 			}
-			buildDone <- build()
+			if strings.Contains(eventPath, "vendor") {
+				log.Printf("buildStarted: %s.\n", "ignored")
+				buildDone <- true
+			} else {
+				buildDone <- build()
+			}
 		}
 	}
 }
